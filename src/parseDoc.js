@@ -1,4 +1,4 @@
-/** @typedef {{ pinyin: string, meaning: string }} Word */
+/** @typedef {{ pinyin: string, meaning: string, type: string }} Word */
 
 /**
  * @param {string} text
@@ -12,14 +12,15 @@ export function parseFlashcardText(text) {
     const line = rawLine.replace(/\u00A0/g, " ").trim();
     if (!line) continue;
 
-    const sep = line.search(/[;\t；]/);
-    if (sep === -1) continue;
+    const parts = line.split(";");
+    if (parts.length !== 3) continue;
 
-    const pinyin = line.slice(0, sep).trim();
-    const meaning = line.slice(sep + 1).trim();
-    if (!pinyin || !meaning) continue;
+    const pinyin = parts[0].trim();
+    const meaning = parts[1].trim();
+    const type = parts[2].trim();
+    if (!pinyin || !meaning || !type) continue;
 
-    words.push({ pinyin, meaning });
+    words.push({ pinyin, meaning, type });
   }
 
   return words;

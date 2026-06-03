@@ -116,7 +116,7 @@ async function handleFile(file) {
     const text = await file.text();
     parsedWords = parseFlashcardText(text);
     if (parsedWords.length === 0) {
-      parsePreview.textContent = "Document read, but no cards were found. Use pinyin;meaning on each line or pinyin<TAB>meaning.";
+      parsePreview.textContent = "Document read, but no cards were found. Use pinyin;meaning;type on each line.";
       setUploadStatus("Fix the document and try again.", "error");
     } else {
       parsePreview.textContent = `Found ${parsedWords.length} word${parsedWords.length === 1 ? "" : "s"} ready to upload.`;

@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import { db, isFirebaseConfigured } from "./firebase.js";
 
-/** @typedef {{ pinyin: string, meaning: string }} Word */
+/** @typedef {{ pinyin: string, meaning: string, type: string }} Word */
 /** @typedef {{ id: string, title: string, words: Word[] }} Deck */
 
 /**
@@ -22,8 +22,9 @@ function normalizeWords(raw) {
       if (!item || typeof item !== "object") return null;
       const pinyin = String(/** @type {{ pinyin?: string }} */ (item).pinyin ?? "").trim();
       const meaning = String(/** @type {{ meaning?: string }} */ (item).meaning ?? "").trim();
-      if (!pinyin || !meaning) return null;
-      return { pinyin, meaning };
+      const type = String(/** @type {{ type?: string }} */ (item).type ?? "").trim();
+      if (!pinyin || !meaning || !type) return null;
+      return { pinyin, meaning, type };
     })
     .filter(Boolean);
 }
@@ -82,7 +83,7 @@ export async function saveDeck(deckId, title, words) {
   assertFirebaseReady();
   const normalized = normalizeWords(words);
   if (normalized.length === 0) {
-    throw new Error("No valid words. Each line must be: pinyin;meaning");
+    throw new Error("No valid words. Each line must be: pinyin;meaning;type");
   }
   await setDoc(
     doc(db, "decks", deckId),
