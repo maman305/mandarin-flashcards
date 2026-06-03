@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Mandarin Flashcards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header header-row">
+        <div class="logo">
+          <span class="logo-icon" aria-hidden="true">管</span>
+          <div>
+            <h1>Admin</h1>
+            <p class="tagline">Upload a Word doc → save to Firebase</p>
+          </div>
+        </div>
+        <a href="index.html" class="btn btn-ghost btn-sm">← Study site</a>
+      </header>
+
+      <main>
+        <section id="login-section" class="panel">
+          <h2 class="section-title">Sign in</h2>
+          <p class="admin-hint">Use the admin account you created in Firebase Authentication.</p>
+          <form id="login-form" class="admin-form">
+            <label class="field">
+              <span>Email</span>
+              <input type="email" id="login-email" required autocomplete="username" />
+            </label>
+            <label class="field">
+              <span>Password</span>
+              <input type="password" id="login-password" required autocomplete="current-password" />
+            </label>
+            <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+          </form>
+          <p id="login-status" class="status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section id="upload-section" class="panel hidden">
+          <div class="admin-top">
+            <p id="admin-user" class="admin-user"></p>
+            <button type="button" id="sign-out-btn" class="btn btn-ghost btn-sm">Sign out</button>
+          </div>
+
+          <h2 class="section-title">Upload deck</h2>
+          <p class="admin-hint">
+            Word file format: one line per card — <code>pinyin;meaning</code> (e.g. <code>nǐ hǎo;hello</code>)
+          </p>
+
+          <form id="upload-form" class="admin-form">
+            <label class="field">
+              <span>Deck title</span>
+              <input type="text" id="deck-title" placeholder="Lesson 1" required />
+            </label>
+            <label class="field">
+              <span>Deck link id</span>
+              <input type="text" id="deck-id" placeholder="lesson-1" pattern="[a-z0-9-]+" title="Lowercase letters, numbers, and hyphens only" required />
+              <span class="field-hint">Used in share URL: ?deck=<strong id="deck-id-preview">lesson-1</strong></span>
+            </label>
+
+            <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Choose Word document">
+              <div class="drop-icon" aria-hidden="true">📄</div>
+              <p class="drop-title">Drop <strong>.docx</strong> here or click to browse</p>
+              <p id="file-name" class="file-name">No file selected</p>
+              <input type="file" id="file-input" accept=".docx" hidden />
+            </div>
+
+            <p id="parse-preview" class="parse-preview" aria-live="polite"></p>
+
+            <button type="submit" id="upload-btn" class="btn btn-primary btn-block" disabled>
+              Upload to Firebase
+            </button>
+          </form>
+
+          <p id="upload-status" class="status" role="status" aria-live="polite"></p>
+          <div id="upload-success" class="upload-success hidden">
+            <p>Deck saved. Students can open:</p>
+            <p><a id="deck-link" href="#" class="deck-share-link"></a></p>
+            <button type="button" id="copy-deck-link-btn" class="btn btn-ghost btn-sm">Copy link</button>
+            <a id="open-deck-link" href="#" class="btn btn-primary btn-sm">Open deck</a>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/admin.js"></script>
+  </body>
+</html>

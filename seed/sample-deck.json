@@ -1,0 +1,13 @@
+{
+  "title": "Sample vocabulary",
+  "words": [
+    { "pinyin": "nǐ hǎo", "meaning": "hello" },
+    { "pinyin": "xiè xie", "meaning": "thank you" },
+    { "pinyin": "zài jiàn", "meaning": "goodbye" },
+    { "pinyin": "wǒ", "meaning": "I, me" },
+    { "pinyin": "nǐ", "meaning": "you" },
+    { "pinyin": "hǎo", "meaning": "good" },
+    { "pinyin": "bù", "meaning": "no, not" },
+    { "pinyin": "shì", "meaning": "to be, yes" }
+  ]
+}

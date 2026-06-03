@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mandarin Flashcards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header header-row">
+        <div class="logo">
+          <span class="logo-icon" aria-hidden="true">闪</span>
+          <div>
+            <h1>Mandarin Flashcards</h1>
+            <p id="tagline" class="tagline">Study Mandarin with shared decks</p>
+          </div>
+        </div>
+        <a href="admin.html" class="btn btn-ghost btn-sm">Admin</a>
+      </header>
+
+      <main>
+        <section id="loading-section" class="panel loading-panel hidden">
+          <p class="loading-text" role="status" aria-live="polite">Loading…</p>
+        </section>
+
+        <section id="home-section" class="panel home-panel hidden">
+          <h2 class="section-title">Choose a deck</h2>
+          <p id="home-status" class="status" role="status" aria-live="polite"></p>
+          <ul id="deck-list" class="deck-list"></ul>
+          <p class="share-hint">Share a deck: copy its link and send to classmates.</p>
+        </section>
+
+        <section id="study-section" class="study-section hidden">
+          <div class="deck-header">
+            <h2 id="deck-title" class="deck-title"></h2>
+            <button type="button" id="copy-link-btn" class="btn btn-ghost btn-sm">Copy share link</button>
+          </div>
+
+          <div class="toolbar">
+            <div class="stats">
+              <span id="card-counter">1 / 1</span>
+              <span class="dot">·</span>
+              <span id="deck-size">0 cards</span>
+            </div>
+            <div class="toolbar-actions">
+              <label class="toggle-label">
+                <span>Front side</span>
+                <select id="front-mode">
+                  <option value="pinyin">Pinyin</option>
+                  <option value="meaning">Meaning</option>
+                </select>
+              </label>
+              <button type="button" id="toggle-word-list-btn" class="btn btn-ghost" aria-expanded="false" aria-controls="word-list-panel">Show word list</button>
+              <button type="button" id="reshuffle-btn" class="btn btn-ghost">Shuffle again</button>
+              <button type="button" id="home-btn" class="btn btn-ghost">All decks</button>
+            </div>
+          </div>
+
+          <div class="card-area">
+            <button type="button" id="flip-btn" class="flashcard" aria-pressed="false" aria-label="Flip card">
+              <div class="flashcard-inner">
+                <div class="flashcard-face flashcard-front">
+                  <span class="face-label" id="front-label">Pinyin</span>
+                  <p class="face-text" id="front-text"></p>
+                </div>
+                <div class="flashcard-face flashcard-back">
+                  <span class="face-label" id="back-label">Meaning</span>
+                  <p class="face-text" id="back-text"></p>
+                </div>
+              </div>
+            </button>
+            <p class="flip-hint">Click card or press <kbd>Space</kbd> to flip</p>
+          </div>
+
+          <section id="word-list-panel" class="word-list-panel panel hidden" aria-label="All words in deck">
+            <h2 class="word-list-title">All words in deck</h2>
+            <ul id="word-list" class="word-list"></ul>
+          </section>
+
+          <nav class="nav-controls" aria-label="Card navigation">
+            <button type="button" id="prev-btn" class="btn btn-nav" aria-label="Previous card">← Previous</button>
+            <button type="button" id="next-btn" class="btn btn-nav btn-primary" aria-label="Next card">Next →</button>
+          </nav>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
