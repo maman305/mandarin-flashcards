@@ -6,13 +6,13 @@
  */
 export function parseFlashcardText(text) {
   const words = [];
-  const lines = text.split(/\r?\n/);
+  const lines = String(text).split(/\r?\n/);
 
   for (const rawLine of lines) {
-    const line = rawLine.trim();
+    const line = rawLine.replace(/\u00A0/g, " ").trim();
     if (!line) continue;
 
-    const sep = line.indexOf(";");
+    const sep = line.search(/[;\t；]/);
     if (sep === -1) continue;
 
     const pinyin = line.slice(0, sep).trim();
@@ -30,7 +30,8 @@ export function parseFlashcardText(text) {
  * @returns {Promise<Word[]>}
  */
 export async function parseDocxBuffer(buffer) {
-  const mammoth = await import("mammoth");
+  const mammothModule = await import("mammoth");
+  const mammoth = mammothModule.default ?? mammothModule;
   const result = await mammoth.extractRawText({ arrayBuffer: buffer });
   return parseFlashcardText(result.value);
 }

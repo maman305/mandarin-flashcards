@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kad Imbas Mandarin UITM Tahap 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        /* Tab Styles */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .tab-btn.active {
+            background: #3498db;
+        }
+        
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Flashcard Styles */
+        .flashcard-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .flashcard-container {
+            perspective: 1000px;
+            height: 250px;
+            margin: 20px 0;
+        }
+        
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .front {
+            background: white;
+            border: 2px solid #3498db;
+        }
+        
+        .back {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .pinyin {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .back .pinyin {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .translation {
+            font-size: 1.8em;
+            color: #2c3e50;
+        }
+        
+        .back .translation {
+            color: white;
+            font-size: 2em;
+        }
+        
+        .dialog {
+            font-size: 1.2em;
+            color: #e0e0e0;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .card-type {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(52, 152, 219, 0.2);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            color: #3498db;
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .nav-btn {
+            background: #2ecc71;
+            color: white;
+            min-width: 120px;
+        }
+        
+        .flip-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .shuffle-btn {
+            background: #9b59b6;
+            color: white;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .counter {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.1em;
+            color: #34495e;
+        }
+        
+        /* Question Section */
+        .question-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .question-box {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s;
+        }
+        
+        .question-box.show-answer {
+            background: #f0f7ff;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .question-type {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-right: 10px;
+        }
+        
+        /* Jawapan User Input */
+        .user-answer-area {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-family: monospace;
+            transition: border 0.3s;
+        }
+        
+        .answer-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .answer-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        /* Jawapan Betul */
+        .correct-answer-area {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border: 1px solid #c8e6c9;
+            display: none;
+        }
+        
+        .correct-answer-area.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .correct-answer-text {
+            font-size: 1.1em;
+            color: #2e7d32;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #4caf50;
+            font-family: monospace;
+        }
+        
+        .hint-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .show-ans-btn {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .show-ans-btn:hover {
+            background: #2980b9;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Stats */
+        .stats {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stats span {
+            margin: 0 15px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 600px) {
+            .flashcard-container {
+                height: 200px;
+            }
+            
+            .pinyin {
+                font-size: 1.8em;
+            }
+            
+            .translation {
+                font-size: 1.4em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .question {
+                font-size: 1.1em;
+            }
+            
+            .answer-input {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Bahasa Mandarin UITM Tahap 2</h1>
+            <p class="subtitle">Kad Imbas & Latihan Pemahaman</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="flashcards">Kad Imbas</button>
+            <button class="tab-btn" data-tab="questions">Soalan Latihan</button>
+        </div>
+        
+        <div class="stats">
+            <span id="card-count">0</span> Kad Imbas | 
+            <span id="learned-count">0</span> Sudah Dipelajari
+        </div>
+        
+        <!-- Flashcard Tab -->
+        <div id="flashcards" class="tab-content active">
+            <div class="flashcard-section">
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="card-face front">
+                            <div class="pinyin" id="pinyin-front">muatkan...</div>
+                            <div class="card-type" id="card-type">Perkataan</div>
+                        </div>
+                        <div class="card-face back">
+                            <div class="pinyin" id="pinyin-back"></div>
+                            <div class="translation" id="translation-back"></div>
+                            <div class="dialog" id="dialog-back"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="counter">
+                    Kad <span id="current">1</span> daripada <span id="total">0</span>
+                </div>
+                
+                <div class="controls">
+                    <button class="nav-btn" id="prevBtn">← Sebelum</button>
+                    <button class="flip-btn" id="flipBtn">Terbalikkan Kad</button>
+                    <button class="shuffle-btn" id="shuffleBtn">🔀 Kacau Kad</button>
+                    <button class="nav-btn" id="nextBtn">Seterusnya →</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Questions Tab -->
+        <div id="questions" class="tab-content">
+            <div class="question-section">
+                <!-- Question 1 -->
+                <div class="question-box" id="q1">
+                    <div class="question">
+                        <span class="question-type">Jawab Soalan</span>
+                        weishenme Kailu yuehui chidao le
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda:</div>
+                        <input type="text" class="answer-input" placeholder="Taip jawapan dalam Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q1')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q1">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">Kailu yuehui chidao le yinwei ta de che huai le</div>
+                        <div class="hint-text">
+                            <strong>Maksud:</strong> Kailu lewat temu janji kerana keretanya rosak
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 2 -->
+                <div class="question-box" id="q2">
+                    <div class="question">
+                        <span class="question-type">Jawab Soalan</span>
+                        weishenme aisha shangke chidao le
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda:</div>
+                        <input type="text" class="answer-input" placeholder="Taip jawapan dalam Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q2')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q2">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">Aisha shangke chidao le yinwei ta cuoguo le bashi</div>
+                        <div class="hint-text">
+                            <strong>Maksud:</strong> Aisha lewat kelas kerana dia terlepas bas
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 3 -->
+                <div class="question-box" id="q3">
+                    <div class="question">
+                        <span class="question-type">Jawab Soalan</span>
+                        weishenme fami da dianhua gei fala
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda:</div>
+                        <input type="text" class="answer-input" placeholder="Taip jawapan dalam Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q3')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q3">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">fami da dianhua gei fala yinwei ta yue le fala qu kan dianying</div>
+                        <div class="hint-text">
+                            <strong>Maksud:</strong> Fami menelefon Fala kerana dia mengajak Fala pergi menonton wayang
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 4 -->
+                <div class="question-box" id="q4">
+                    <div class="question">
+                        <span class="question-type">Jawab Soalan</span>
+                        weishenme 7 dian le, weishenme Lili de baba hai meiyoi hui jia
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda:</div>
+                        <input type="text" class="answer-input" placeholder="Taip jawapan dalam Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q4')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q4">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">Lili de baba hai meiyou hui jia yinwei Guandan Lu saiche</div>
+                        <div class="hint-text">
+                            <strong>Maksud:</strong> Bapa Lili belum pulang kerana ada kemalangan di Jalan Guandan
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 5 -->
+                <div class="question-box" id="q5">
+                    <div class="question">
+                        <span class="question-type">Terjemahan (ke Mandarin)</span>
+                        Minta maaf, saya terlupa kita ada janji temu pada hari ini
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda (dalam Pinyin):</div>
+                        <input type="text" class="answer-input" placeholder="Terjemah ke Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q5')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q5">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">duibuqi, wo wang le women jintian de yuehui</div>
+                        <div class="hint-text">
+                            <strong>Aksara Cina:</strong> 对不起，我忘了我们今天的约会
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 6 -->
+                <div class="question-box" id="q6">
+                    <div class="question">
+                        <span class="question-type">Terjemahan (ke Mandarin)</span>
+                        kenapa aisha tidak menjawab panggilan telefon?
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda (dalam Pinyin):</div>
+                        <input type="text" class="answer-input" placeholder="Terjemah ke Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q6')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q6">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">weishenme aisha meiyou jie dianhua le</div>
+                        <div class="hint-text">
+                            <strong>Aksara Cina:</strong> 为什么Aisha没有接电话了
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 7 -->
+                <div class="question-box" id="q7">
+                    <div class="question">
+                        <span class="question-type">Terjemahan (ke Mandarin)</span>
+                        cuaca di malaysia sangat baik, tidak sejuk dan tidak panas
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda (dalam Pinyin):</div>
+                        <input type="text" class="answer-input" placeholder="Terjemah ke Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q7')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q7">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">Malaixia de tianqi hen hao, bu leng ye bu re</div>
+                        <div class="hint-text">
+                            <strong>Aksara Cina:</strong> 马来西亚的天气很好，不冷也不热
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 8 -->
+                <div class="question-box" id="q8">
+                    <div class="question">
+                        <span class="question-type">Terjemahan (ke Mandarin)</span>
+                        cepatlah kita pergi beli bertih jagung dan air bikarbonat
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda (dalam Pinyin):</div>
+                        <input type="text" class="answer-input" placeholder="Terjemah ke Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q8')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q8">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">women kuai qu mai baomihua he qishui</div>
+                        <div class="hint-text">
+                            <strong>Aksara Cina:</strong> 我们快去买爆米花和汽水
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question 9 -->
+                <div class="question-box" id="q9">
+                    <div class="question">
+                        <span class="question-type">Terjemahan (ke Mandarin)</span>
+                        khairul telah membeli 3 keping tiket dalam talian
+                    </div>
+                    
+                    <div class="user-answer-area">
+                        <div class="answer-label">Jawapan Anda (dalam Pinyin):</div>
+                        <input type="text" class="answer-input" placeholder="Terjemah ke Pinyin di sini...">
+                    </div>
+                    
+                    <button class="show-ans-btn" onclick="showAnswer('q9')">📖 Tunjukkan Jawapan Betul</button>
+                    
+                    <div class="correct-answer-area" id="answer-q9">
+                        <div class="answer-label">Jawapan Betul:</div>
+                        <div class="correct-answer-text">Khairul yijing shangwang mai 2 zhang piao le</div>
+                        <div class="hint-text">
+                            <strong>Aksara Cina:</strong> Khairul已经上网买2张票了
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data kad imbas (dicampur semula secara rawak)
+        const allFlashcards = [
+            // Perkataan tunggal dari semua dialog (rawak)
+            { pinyin: "chídào", translation: "lewat", type: "perkataan" },
+            { pinyin: "kuài", translation: "cepat", type: "perkataan" },
+            { pinyin: "zhàng", translation: "keping", type: "perkataan" },
+            { pinyin: "jìn", translation: "masuk", type: "perkataan" },
+            { pinyin: "kāishǐ", translation: "mula", type: "perkataan" },
+            { pinyin: "kànjiàn", translation: "nampak", type: "perkataan" },
+            { pinyin: "shuō", translation: "cakap", type: "perkataan" },
+            { pinyin: "tiānqì", translation: "cuaca", type: "perkataan" },
+            { pinyin: "lěng", translation: "sejuk", type: "perkataan" },
+            { pinyin: "rè", translation: "panas", type: "perkataan" },
+            { pinyin: "qǐnglǎng", translation: "cerah", type: "perkataan" },
+            { pinyin: "wèishénme", translation: "kenapa", type: "perkataan" },
+            { pinyin: "yīnwèi", translation: "kerana", type: "perkataan" },
+            { pinyin: "cuòguò", translation: "terlepas", type: "perkataan" },
+            { pinyin: "bāshì", translation: "bas", type: "perkataan" },
+            { pinyin: "ràng", translation: "biarkan", type: "perkataan" },
+            { pinyin: "jiǔ", translation: "lama", type: "perkataan" },
+            { pinyin: "děng", translation: "tunggu", type: "perkataan" },
+            { pinyin: "háiyǒu", translation: "ada lagi", type: "perkataan" },
+            { pinyin: "shíjiān", translation: "masa", type: "perkataan" },
+            { pinyin: "piào", translation: "tiket", type: "perkataan" },
+            { pinyin: "zuówǎn", translation: "malam semalam", type: "perkataan" },
+            { pinyin: "yǐjīng", translation: "sudah", type: "perkataan" },
+            { pinyin: "bàomǐhuà", translation: "bertih jagung", type: "perkataan" },
+            { pinyin: "qìshuǐ", translation: "air bikarbonat", type: "perkataan" },
+            { pinyin: "dào", translation: "sampai", type: "perkataan" },
+            { pinyin: "jìnqù", translation: "masuk ke dalam", type: "perkataan" },
+            { pinyin: "zěnmeyàng", translation: "bagaimana", type: "perkataan" },
+            { pinyin: "xiàyǔ", translation: "turun hujan", type: "perkataan" },
+            
+            // Dialog pendek
+            { pinyin: "Tiānqì zěnmeyàng?", translation: "Cuaca bagaimana?", dialog: "Dialog 2", type: "dialog" },
+            { pinyin: "Jīntiān xiàyǔ ma?", translation: "Hari ini hujan?", dialog: "Dialog 2", type: "dialog" },
+            { pinyin: "Bù lěng yě bù rè", translation: "Tidak sejuk dan tidak panas", dialog: "Dialog 2", type: "dialog" },
+            { pinyin: "Wǒ chídào le", translation: "Saya lewat", dialog: "Dialog 3", type: "dialog" },
+            { pinyin: "Cuòguò le bāshì", translation: "Terlepas bas", dialog: "Dialog 3", type: "dialog" },
+            { pinyin: "Děng le hěn jiǔ", translation: "Tunggu lama sangat", dialog: "Dialog 3", type: "dialog" },
+            { pinyin: "Kuài diǎn!", translation: "Cepatlah!", dialog: "Dialog 3", type: "dialog" },
+            { pinyin: "Mǎi piào le ma?", translation: "Sudah beli tiket?", dialog: "Dialog 3", type: "dialog" },
+            { pinyin: "Kāishǐ le", translation: "Sudah bermula", dialog: "Dialog 4", type: "dialog" },
+            { pinyin: "Wǒ kànjiàn le", translation: "Saya nampak", dialog: "Dialog 4", type: "dialog" },
+            { pinyin: "Dào le ma?", translation: "Sudah sampai?", dialog: "Dialog 4", type: "dialog" },
+            { pinyin: "Jìnqù ba", translation: "Mari masuk", dialog: "Dialog 4", type: "dialog" }
+        ];
+
+        // Kacau kad imbas
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        let flashcards = shuffleArray([...allFlashcards]);
+        let currentIndex = 0;
+        let learnedCards = new Set();
+
+        // Elemen DOM
+        const flashcard = document.getElementById('flashcard');
+        const pinyinFront = document.getElementById('pinyin-front');
+        const pinyinBack = document.getElementById('pinyin-back');
+        const translationBack = document.getElementById('translation-back');
+        const dialogBack = document.getElementById('dialog-back');
+        const cardType = document.getElementById('card-type');
+        const currentEl = document.getElementById('current');
+        const totalEl = document.getElementById('total');
+        const cardCountEl = document.getElementById('card-count');
+        const learnedCountEl = document.getElementById('learned-count');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const flipBtn = document.getElementById('flipBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+
+        // Fungsi untuk kemaskini kad
+        function updateCard() {
+            const card = flashcards[currentIndex];
+            pinyinFront.textContent = card.pinyin;
+            pinyinBack.textContent = card.pinyin;
+            translationBack.textContent = card.translation;
+            cardType.textContent = card.type === 'dialog' ? 'Dialog' : 'Perkataan';
+            
+            if (card.dialog) {
+                dialogBack.textContent = `(${card.dialog})`;
+                dialogBack.style.display = 'block';
+            } else {
+                dialogBack.style.display = 'none';
+            }
+            
+            currentEl.textContent = currentIndex + 1;
+            totalEl.textContent = flashcards.length;
+            cardCountEl.textContent = flashcards.length;
+            learnedCountEl.textContent = learnedCards.size;
+            
+            // Pastikan kad menghadap ke depan
+            flashcard.classList.remove('flipped');
+            
+            // Kemaskini keadaan butang
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === flashcards.length - 1;
+            
+            // Tandai jika sudah dipelajari
+            if (learnedCards.has(currentIndex)) {
+                flashcard.style.boxShadow = '0 5px 15px rgba(46, 204, 113, 0.5)';
+            } else {
+                flashcard.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            }
+        }
+
+        // Fungsi untuk terbalikkan kad
+        function flipCard() {
+            flashcard.classList.toggle('flipped');
+            // Tandai sebagai dipelajari apabila diterbalikkan
+            if (!learnedCards.has(currentIndex)) {
+                learnedCards.add(currentIndex);
+                learnedCountEl.textContent = learnedCards.size;
+                flashcard.style.boxShadow = '0 5px 15px rgba(46, 204, 113, 0.5)';
+            }
+        }
+
+        // Fungsi untuk kad seterusnya
+        function nextCard() {
+            if (currentIndex < flashcards.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        // Fungsi untuk kad sebelumnya
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        // Fungsi untuk kacau semula kad
+        function shuffleCards() {
+            flashcards = shuffleArray([...allFlashcards]);
+            currentIndex = 0;
+            learnedCards.clear();
+            updateCard();
+            alert('Kad telah dikacau semula!');
+        }
+
+        // Fungsi untuk tab
+        function switchTab(tabId) {
+            // Update tab buttons
+            tabBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show selected tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Fungsi untuk tunjukkan jawapan
+        function showAnswer(questionId) {
+            const answerDisplay = document.getElementById(`answer-${questionId}`);
+            const questionBox = document.getElementById(questionId);
+            
+            // Toggle jawapan
+            if (answerDisplay.classList.contains('show')) {
+                answerDisplay.classList.remove('show');
+                questionBox.classList.remove('show-answer');
+            } else {
+                answerDisplay.classList.add('show');
+                questionBox.classList.add('show-answer');
+            }
+        }
+
+        // Event listeners
+        flashcard.addEventListener('click', flipCard);
+        flipBtn.addEventListener('click', flipCard);
+        nextBtn.addEventListener('click', nextCard);
+        prevBtn.addEventListener('click', prevCard);
+        shuffleBtn.addEventListener('click', shuffleCards);
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchTab(this.getAttribute('data-tab'));
+            });
+        });
+
+        // Papan kekunci navigation untuk kad imbas
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcards').classList.contains('active')) {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    nextCard();
+                } else if (e.key === 'ArrowLeft') {
+                    prevCard();
+                } else if (e.key === 'Enter' || e.key === 'f') {
+                    flipCard();
+                } else if (e.key === 's') {
+                    shuffleCards();
+                }
+            }
+        });
+
+        // Mula dengan kad pertama
+        updateCard();
+
+        console.log("Petua penggunaan:");
+        console.log("Tab Kad Imbas:");
+        console.log("- Klik kad atau tekan F/Enter untuk terbalikkan");
+        console.log("- Anak panah kanan atau Space untuk kad seterusnya");
+        console.log("- Anak panah kiri untuk kad sebelumnya");
+        console.log("- S untuk kacau kad");
+        console.log("Tab Soalan:");
+        console.log("- Taip jawapan anda dalam input box");
+        console.log("- Klik 'Tunjukkan Jawapan Betul' untuk lihat jawapan");
+        console.log("- Klik lagi untuk sembunyikan jawapan");
+    </script>
+</body>
+</html>

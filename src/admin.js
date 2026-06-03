@@ -106,7 +106,7 @@ async function handleFile(file) {
     const buffer = await file.arrayBuffer();
     parsedWords = await parseDocxBuffer(buffer);
     if (parsedWords.length === 0) {
-      parsePreview.textContent = "No valid lines found. Use pinyin;meaning on each line.";
+      parsePreview.textContent = "Document read, but no cards were found. Use pinyin;meaning on each line or pinyin<TAB>meaning.";
       setUploadStatus("Fix the document and try again.", "error");
     } else {
       parsePreview.textContent = `Found ${parsedWords.length} word${parsedWords.length === 1 ? "" : "s"} ready to upload.`;
@@ -115,7 +115,7 @@ async function handleFile(file) {
     console.error(err);
     parsedWords = [];
     parsePreview.textContent = "";
-    setUploadStatus("Could not read the Word file.", "error");
+    setUploadStatus("Could not read the Word file. Make sure the file is a valid .docx document.", "error");
   }
 
   updateUploadButton();
