@@ -1,7 +1,7 @@
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { saveDeck } from "./decks.js";
 import { auth, isFirebaseConfigured } from "./firebase.js";
-import { parseDocxBuffer, slugifyDeckId } from "./parseDoc.js";
+import { parseFlashcardText, slugifyDeckId } from "./parseDoc.js";
 
 const loginSection = document.getElementById("login-section");
 const uploadSection = document.getElementById("upload-section");
@@ -92,8 +92,8 @@ deckIdInput.addEventListener("input", () => {
 });
 
 async function handleFile(file) {
-  if (!file.name.toLowerCase().endsWith(".docx")) {
-    setUploadStatus("Please choose a .docx file.", "error");
+  if (!file.name.toLowerCase().endsWith(".txt")) {
+    setUploadStatus("Please choose a .txt file.", "error");
     return;
   }
 
@@ -103,8 +103,8 @@ async function handleFile(file) {
   setUploadStatus("");
 
   try {
-    const buffer = await file.arrayBuffer();
-    parsedWords = await parseDocxBuffer(buffer);
+    const text = await file.text();
+    parsedWords = parseFlashcardText(text);
     if (parsedWords.length === 0) {
       parsePreview.textContent = "Document read, but no cards were found. Use pinyin;meaning on each line or pinyin<TAB>meaning.";
       setUploadStatus("Fix the document and try again.", "error");
@@ -115,7 +115,7 @@ async function handleFile(file) {
     console.error(err);
     parsedWords = [];
     parsePreview.textContent = "";
-    setUploadStatus("Could not read the Word file. Make sure the file is a valid .docx document.", "error");
+    setUploadStatus("Could not read the text file. Make sure the file is a valid .txt document.", "error");
   }
 
   updateUploadButton();
@@ -189,6 +189,7 @@ uploadForm.addEventListener("submit", async (e) => {
     openDeckLink.href = link;
     uploadSuccess.classList.remove("hidden");
     setUploadStatus(`Saved ${count} words to deck "${title}".`, "success");
+    alert(`Success! ${count} words were added to Firebase for deck: ${title}`);
 
     selectedFile = null;
     parsedWords = [];

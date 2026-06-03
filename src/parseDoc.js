@@ -26,17 +26,6 @@ export function parseFlashcardText(text) {
 }
 
 /**
- * @param {ArrayBuffer} buffer
- * @returns {Promise<Word[]>}
- */
-export async function parseDocxBuffer(buffer) {
-  const mammothModule = await import("mammoth");
-  const mammoth = mammothModule.default ?? mammothModule;
-  const result = await mammoth.extractRawText({ arrayBuffer: buffer });
-  return parseFlashcardText(result.value);
-}
-
-/**
  * @param {string} title
  * @returns {string}
  */

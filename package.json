@@ -16,7 +16,6 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "firebase": "^11.10.0",
-    "mammoth": "^1.9.0"
+    "firebase": "^11.10.0"
   }
 }

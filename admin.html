@@ -51,7 +51,7 @@
 
           <h2 class="section-title">Upload deck</h2>
           <p class="admin-hint">
-            Word file format: one line per card — <code>pinyin;meaning</code> (e.g. <code>nǐ hǎo;hello</code>)
+            Text file format: one line per card — <code>pinyin;meaning</code> (e.g. <code>nǐ hǎo;hello</code>)
           </p>
 
           <form id="upload-form" class="admin-form">
@@ -65,11 +65,11 @@
               <span class="field-hint">Used in share URL: ?deck=<strong id="deck-id-preview">lesson-1</strong></span>
             </label>
 
-            <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Choose Word document">
+            <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Choose text document">
               <div class="drop-icon" aria-hidden="true">📄</div>
-              <p class="drop-title">Drop <strong>.docx</strong> here or click to browse</p>
+              <p class="drop-title">Drop <strong>.txt</strong> here or click to browse</p>
               <p id="file-name" class="file-name">No file selected</p>
-              <input type="file" id="file-input" accept=".docx" hidden />
+              <input type="file" id="file-input" accept=".txt" hidden />
             </div>
 
             <p id="parse-preview" class="parse-preview" aria-live="polite"></p>
