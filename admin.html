@@ -74,6 +74,11 @@
 
             <p id="parse-preview" class="parse-preview" aria-live="polite"></p>
 
+            <div id="upload-loader" class="upload-loader hidden" role="status" aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="upload-loader-text">Uploading to Firebase…</span>
+            </div>
+
             <button type="submit" id="upload-btn" class="btn btn-primary btn-block" disabled>
               Upload to Firebase
             </button>

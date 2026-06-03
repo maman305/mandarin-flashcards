@@ -25,6 +25,7 @@ const uploadSuccess = document.getElementById("upload-success");
 const deckLinkEl = document.getElementById("deck-link");
 const copyDeckLinkBtn = document.getElementById("copy-deck-link-btn");
 const openDeckLink = document.getElementById("open-deck-link");
+const uploadLoader = document.getElementById("upload-loader");
 
 /** @type {import("./parseDoc.js").Word[]} */
 let parsedWords = [];
@@ -62,6 +63,15 @@ function showUpload(user) {
 function updateDeckIdPreview() {
   const id = deckIdInput.value.trim() || "lesson-1";
   deckIdPreview.textContent = id;
+}
+
+function showUploadLoader(message) {
+  uploadLoader.querySelector(".upload-loader-text").textContent = message;
+  uploadLoader.classList.remove("hidden");
+}
+
+function hideUploadLoader() {
+  uploadLoader.classList.add("hidden");
 }
 
 function updateUploadButton() {
@@ -179,6 +189,7 @@ uploadForm.addEventListener("submit", async (e) => {
 
   uploadBtn.disabled = true;
   setUploadStatus("Uploading to Firebase…");
+  showUploadLoader("Uploading to Firebase…");
   uploadSuccess.classList.add("hidden");
 
   try {
@@ -197,12 +208,14 @@ uploadForm.addEventListener("submit", async (e) => {
     fileNameEl.textContent = "No file selected";
     parsePreview.textContent = "";
     deckIdTouched = false;
+    hideUploadLoader();
   } catch (err) {
     console.error(err);
     setUploadStatus(
       err instanceof Error ? err.message : "Upload failed. Check Firestore rules and sign-in.",
       "error"
     );
+    hideUploadLoader();
   }
 
   updateUploadButton();
